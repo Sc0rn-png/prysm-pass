@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PRYSM Pass</title>
+  <link rel="manifest" href="manifest.json">
+  <style>
+    body {
+      background-color: #0f0f0f;
+      color: #f0f0f0;
+      font-family: 'Arial', sans-serif;
+      padding: 1rem;
+    }
+    h1 {
+      text-align: center;
+      font-size: 2rem;
+      letter-spacing: 2px;
+      color: #cfaeff;
+    }
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+    .logo {
+      height: 50px;
+      object-fit: contain;
+      margin-bottom: 0.5rem;
+    }
+    .column {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .cell {
+      height: 80px;
+      width: 80px;
+      background-color: #1c1c1c;
+      border: 2px dashed #333;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      border-radius: 8px;
+      margin: 0.3rem 0;
+    }
+    select, button {
+      width: 100%;
+      padding: 0.5rem;
+      margin: 0.5rem 0;
+      font-size: 1rem;
+      border: none;
+      border-radius: 4px;
+    }
+    button {
+      background-color: #cfaeff;
+      color: #0f0f0f;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .final-symbol {
+      display: none;
+      text-align: center;
+      font-size: 2rem;
+      color: #ffd700;
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>PRYSM Pass</h1>
+  <div class="grid-container">
+    <div class="column">
+      <img src="logo1.png" alt="Logo 1" class="logo">
+      <div class="cell" id="cell0"></div>
+      <div class="cell" id="cell1"></div>
+    </div>
+    <div class="column">
+      <img src="logo2.png" alt="Logo 2" class="logo">
+      <div class="cell" id="cell2"></div>
+      <div class="cell" id="cell3"></div>
+    </div>
+    <div class="column">
+      <img src="logo3.png" alt="Logo 3" class="logo">
+      <div class="cell" id="cell4"></div>
+      <div class="cell" id="cell5"></div>
+    </div>
+  </div>
+
+  <label for="symbol">Symbole</label>
+  <select id="symbol">
+    <option value="▲">Triangle</option>
+    <option value="◆">Losange</option>
+    <option value="●">Cercle</option>
+  </select>
+
+  <label for="color">Couleur</label>
+  <select id="color">
+    <option value="violet">Violet</option>
+    <option value="gold">Doré</option>
+    <option value="beige">Beige</option>
+    <option value="emerald">Emeraude</option>
+  </select>
+
+  <button onclick="validateChallenge()">Valider le passage</button>
+  <button onclick="resetProgress()">Réinitialiser</button>
+
+  <div class="final-symbol" id="finalSymbol">✅ PRYSM complété !</div>
+
+  <script>
+    const codes = [
+      { symbol: '▲', color: 'violet' },
+      { symbol: '●', color: 'gold' },
+      { symbol: '◆', color: 'emerald' },
+      { symbol: '●', color: 'beige' },
+      { symbol: '▲', color: 'emerald' },
+      { symbol: '◆', color: 'violet' }
+    ];
+
+    let current = parseInt(localStorage.getItem('prysm_current')) || 0;
+
+    window.onload = () => {
+      for (let i = 0; i < current; i++) {
+        const saved = JSON.parse(localStorage.getItem(`cell${i}`));
+        if (saved) {
+          const cell = document.getElementById('cell' + i);
+          cell.textContent = saved.symbol;
+          cell.style.backgroundColor = colorToHex(saved.color);
+        }
+      }
+      if (current === 6) {
+        document.getElementById('finalSymbol').style.display = 'block';
+      }
+    }
+
+    function validateChallenge() {
+      if (current >= codes.length) return;
+      const sym = document.getElementById('symbol').value;
+      const col = document.getElementById('color').value;
+      const correct = codes[current];
+
+      if (sym === correct.symbol && col === correct.color) {
+        const cell = document.getElementById('cell' + current);
+        cell.textContent = sym;
+        cell.style.backgroundColor = colorToHex(col);
+        localStorage.setItem(`cell${current}`, JSON.stringify({ symbol: sym, color: col }));
+        current++;
+        localStorage.setItem('prysm_current', current);
+        if (current === 6) {
+          document.getElementById('finalSymbol').style.display = 'block';
+        }
+      } else {
+        alert("Code incorrect. Recommence.");
+      }
+    }
+
+    function resetProgress() {
+      localStorage.clear();
+      location.reload();
+    }
+
+    function colorToHex(color) {
+      switch(color) {
+        case 'violet': return '#cfaeff';
+        case 'gold': return '#ffd700';
+        case 'beige': return '#f5f5dc';
+        case 'emerald': return '#50c878';
+        default: return '#fff';
+      }
+    }
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js');
+    }
+  </script>
+</body>
+</html>
