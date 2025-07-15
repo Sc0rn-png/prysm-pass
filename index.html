@@ -74,7 +74,7 @@
   </style>
 </head>
 <body>
-  <h1>-PRYSM-</h1>
+  <h1>PRYSM</h1>
   <div class="grid-container">
     <div class="column">
       <img src="logo1.png" alt="Logo 1" class="logo">
@@ -114,15 +114,6 @@
   <div class="final-symbol" id="finalSymbol">✅ PRYSM complété !</div>
 
   <script>
-    const codes = [
-      { symbol: '▲', color: 'violet' },
-      { symbol: '●', color: 'gold' },
-      { symbol: '◆', color: 'emerald' },
-      { symbol: '●', color: 'beige' },
-      { symbol: '▲', color: 'emerald' },
-      { symbol: '◆', color: 'violet' }
-    ];
-
     let selectedCell = null;
 
     window.onload = () => {
@@ -153,21 +144,16 @@
 
       const sym = document.getElementById('symbol').value;
       const col = document.getElementById('color').value;
-      const correct = codes[selectedCell];
 
-      if (sym === correct.symbol && col === correct.color) {
-        const cell = document.getElementById('cell' + selectedCell);
-        cell.textContent = sym;
-        cell.style.backgroundColor = colorToHex(col);
-        localStorage.setItem(`cell${selectedCell}`, JSON.stringify({ symbol: sym, color: col }));
+      const cell = document.getElementById('cell' + selectedCell);
+      cell.textContent = sym;
+      cell.style.backgroundColor = colorToHex(col);
+      localStorage.setItem(`cell${selectedCell}`, JSON.stringify({ symbol: sym, color: col }));
 
-        const allFilled = codes.every((_, i) => localStorage.getItem(`cell${i}`));
-        if (allFilled) {
-          document.getElementById('finalSymbol').style.display = 'block';
-          localStorage.setItem('prysm_done', 'true');
-        }
-      } else {
-        alert("Code incorrect. Recommence.");
+      const allFilled = Array.from({length: 6}, (_, i) => localStorage.getItem(`cell${i}`)).every(Boolean);
+      if (allFilled) {
+        document.getElementById('finalSymbol').style.display = 'block';
+        localStorage.setItem('prysm_done', 'true');
       }
     }
 
