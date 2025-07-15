@@ -45,6 +45,10 @@
       font-size: 1.5rem;
       border-radius: 8px;
       margin: 0.3rem 0;
+      cursor: pointer;
+    }
+    .selected {
+      border: 2px solid #cfaeff !important;
     }
     select, button {
       width: 100%;
@@ -74,18 +78,18 @@
   <div class="grid-container">
     <div class="column">
       <img src="logo1.png" alt="Logo 1" class="logo">
-      <div class="cell" id="cell0"></div>
-      <div class="cell" id="cell1"></div>
+      <div class="cell" id="cell0" onclick="selectCell(0)"></div>
+      <div class="cell" id="cell1" onclick="selectCell(1)"></div>
     </div>
     <div class="column">
       <img src="logo2.png" alt="Logo 2" class="logo">
-      <div class="cell" id="cell2"></div>
-      <div class="cell" id="cell3"></div>
+      <div class="cell" id="cell2" onclick="selectCell(2)"></div>
+      <div class="cell" id="cell3" onclick="selectCell(3)"></div>
     </div>
     <div class="column">
       <img src="logo3.png" alt="Logo 3" class="logo">
-      <div class="cell" id="cell4"></div>
-      <div class="cell" id="cell5"></div>
+      <div class="cell" id="cell4" onclick="selectCell(4)"></div>
+      <div class="cell" id="cell5" onclick="selectCell(5)"></div>
     </div>
   </div>
 
@@ -119,10 +123,10 @@
       { symbol: '◆', color: 'violet' }
     ];
 
-    let current = parseInt(localStorage.getItem('prysm_current')) || 0;
+    let selectedCell = null;
 
     window.onload = () => {
-      for (let i = 0; i < current; i++) {
+      for (let i = 0; i < 6; i++) {
         const saved = JSON.parse(localStorage.getItem(`cell${i}`));
         if (saved) {
           const cell = document.getElementById('cell' + i);
@@ -130,26 +134,37 @@
           cell.style.backgroundColor = colorToHex(saved.color);
         }
       }
-      if (current === 6) {
+      const done = localStorage.getItem('prysm_done');
+      if (done === 'true') {
         document.getElementById('finalSymbol').style.display = 'block';
       }
     }
 
+    function selectCell(index) {
+      if (selectedCell !== null) {
+        document.getElementById('cell' + selectedCell).classList.remove('selected');
+      }
+      selectedCell = index;
+      document.getElementById('cell' + index).classList.add('selected');
+    }
+
     function validateChallenge() {
-      if (current >= codes.length) return;
+      if (selectedCell === null) return alert("Sélectionne une case à valider.");
+
       const sym = document.getElementById('symbol').value;
       const col = document.getElementById('color').value;
-      const correct = codes[current];
+      const correct = codes[selectedCell];
 
       if (sym === correct.symbol && col === correct.color) {
-        const cell = document.getElementById('cell' + current);
+        const cell = document.getElementById('cell' + selectedCell);
         cell.textContent = sym;
         cell.style.backgroundColor = colorToHex(col);
-        localStorage.setItem(`cell${current}`, JSON.stringify({ symbol: sym, color: col }));
-        current++;
-        localStorage.setItem('prysm_current', current);
-        if (current === 6) {
+        localStorage.setItem(`cell${selectedCell}`, JSON.stringify({ symbol: sym, color: col }));
+
+        const allFilled = codes.every((_, i) => localStorage.getItem(`cell${i}`));
+        if (allFilled) {
           document.getElementById('finalSymbol').style.display = 'block';
+          localStorage.setItem('prysm_done', 'true');
         }
       } else {
         alert("Code incorrect. Recommence.");
