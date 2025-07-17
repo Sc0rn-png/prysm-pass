@@ -35,9 +35,10 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
-  margin: 2rem auto; /* centre la grille horizontalement */
-  max-width: 420px;   /* limite la largeur totale */
-  padding: 0 0.5rem;  /* petit padding de chaque côté */
+  margin: 2rem auto;             /* centre horizontalement */
+  max-width: 420px;              /* largeur fixe pour contrôler la grille */
+  padding: 0 1rem;               /* petite marge intérieure */
+  justify-content: center;       /* centre les colonnes */
   box-sizing: border-box;
 }
     .logo {
@@ -97,7 +98,7 @@
   </div>
   <div class="grid-container">
   <div class="column">
-    <img src="logo1.png" alt="Logo 1" class="logo" style="height: 100px; width: 100px; padding-left: 0.5rem;">
+    <img src="logo1.png" alt="Logo 1" class="logo" style="height: 100px; width: 100px;">
     <div class="cell" id="cell0" onclick="selectCell(0)"></div>
     <div class="cell" id="cell1" onclick="selectCell(1)"></div>
   </div>
@@ -107,7 +108,7 @@
     <div class="cell" id="cell3" onclick="selectCell(3)"></div>
   </div>
   <div class="column">
-    <img src="logo3.png" alt="Logo 3" class="logo" style="height: 100px; width: 100px; padding-right: 0.5rem;">
+    <img src="logo3.png" alt="Logo 3" class="logo" style="height: 100px; width: 100px;">
     <div class="cell" id="cell4" onclick="selectCell(4)"></div>
     <div class="cell" id="cell5" onclick="selectCell(5)"></div>
   </div>
