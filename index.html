@@ -13,11 +13,30 @@
       font-family: 'Arial', sans-serif;
       padding: 1rem;
     }
-    h1 {
-      text-align: center;
-      font-size: 1rem;
-      letter-spacing: 2px;
-      color: #ffffff;
+    @keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+    .h1 {
+  animation: fadeInUp 1s ease-in-out;
+  font-family: 'Montserrat', sans-serif; /* ou autre police élégante */
+  font-size: 2rem; /* ou 32px */
+  font-weight: 700;
+  color: white;
+  text-align: center;
+  margin: 40px 0 20px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  border-bottom: 2px solid #fff;
+  display: inline-block;
+  padding-bottom: 10px;
+}
     }
     .grid-container {
       display: grid;
